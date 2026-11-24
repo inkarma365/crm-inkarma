@@ -4,6 +4,12 @@
 # Limiti di memoria dimensionati sulla quota della slice crmdev (2,5 GB totali).
 name: crm-inkarma
 
+# Variabili facoltative (AI_PROVIDERS, LOGIC_FUNCTION_TYPE, ...): Twenty rifiuta i valori vuoti,
+# quindi stanno in twenty-extra.env (non versionato) e vengono passate solo se presenti.
+x-twenty-extra: &twenty-extra
+  - path: ./twenty-extra.env
+    required: false
+
 x-twenty-env: &twenty-env
   PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/${PG_DATABASE_NAME:-default}
   SERVER_URL: ${SERVER_URL:-http://localhost:33000}
@@ -21,11 +27,6 @@ x-twenty-env: &twenty-env
   EMAIL_SMTP_NO_TLS: "true"
   EMAIL_FROM_ADDRESS: ${EMAIL_FROM_ADDRESS:-crm@inkarma.test}
   EMAIL_FROM_NAME: ${EMAIL_FROM_NAME:-CRM inKarma}
-  # AI interna di Twenty via OpenRouter (gateway OpenAI-compatibile)
-  AI_PROVIDERS: ${TWENTY_AI_PROVIDERS:-}
-  AI_MODELS_DEFAULT_FAST: ${TWENTY_AI_MODELS_DEFAULT_FAST:-}
-  AI_MODELS_DEFAULT_SMART: ${TWENTY_AI_MODELS_DEFAULT_SMART:-}
-  LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-}
 
 services:
   server:
@@ -36,6 +37,7 @@ services:
       - server-local-data:/app/packages/twenty-server/.local-storage
     ports:
       - "127.0.0.1:33000:3000"
+    env_file: *twenty-extra
     environment:
       <<: *twenty-env
       NODE_PORT: "3000"
@@ -56,6 +58,7 @@ services:
     mem_limit: 600m
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
+    env_file: *twenty-extra
     environment:
       <<: *twenty-env
       DISABLE_DB_MIGRATIONS: "true"
