@@ -1,0 +1,121 @@
+# Stack CRM inKarma × LeadSpark — sandbox crmdev (Docker rootless)
+# Twenty pinnato per tag + digest (release twenty/v2.63.0, 2026-11-24).
+# Porte pubblicate SOLO su 127.0.0.1:33000-33099 (raggiungibili via tunnel SSH).
+# Limiti di memoria dimensionati sulla quota della slice crmdev (2,5 GB totali).
+name: crm-inkarma
+
+x-twenty-env: &twenty-env
+  PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/${PG_DATABASE_NAME:-default}
+  SERVER_URL: ${SERVER_URL:-http://localhost:33000}
+  REDIS_URL: redis://redis:6379
+  STORAGE_TYPE: local
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+  FALLBACK_ENCRYPTION_KEY: ${FALLBACK_ENCRYPTION_KEY:-}
+  TELEMETRY_ENABLED: "false"
+  # Posta: sync IMAP/SMTP/CalDAV abilitata (casella di test reale)
+  IS_IMAP_SMTP_CALDAV_ENABLED: "true"
+  # Email di sistema di Twenty (inviti, reset) → Mailpit in sviluppo
+  EMAIL_DRIVER: smtp
+  EMAIL_SMTP_HOST: mailpit
+  EMAIL_SMTP_PORT: "1025"
+  EMAIL_SMTP_NO_TLS: "true"
+  EMAIL_FROM_ADDRESS: ${EMAIL_FROM_ADDRESS:-crm@inkarma.test}
+  EMAIL_FROM_NAME: ${EMAIL_FROM_NAME:-CRM inKarma}
+  # AI interna di Twenty via OpenRouter (gateway OpenAI-compatibile)
+  AI_PROVIDERS: ${TWENTY_AI_PROVIDERS:-}
+  AI_MODELS_DEFAULT_FAST: ${TWENTY_AI_MODELS_DEFAULT_FAST:-}
+  AI_MODELS_DEFAULT_SMART: ${TWENTY_AI_MODELS_DEFAULT_SMART:-}
+  LOGIC_FUNCTION_TYPE: ${LOGIC_FUNCTION_TYPE:-}
+
+services:
+  server:
+    image: twentycrm/twenty:v2.63.0@sha256:a3f361c289dcfd6e1fbca0201c49441199e0522fd0c8debe665af95c6a0b5269
+    stop_grace_period: 120s
+    mem_limit: 900m
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    ports:
+      - "127.0.0.1:33000:3000"
+    environment:
+      <<: *twenty-env
+      NODE_PORT: "3000"
+      NODE_OPTIONS: --max-old-space-size=700
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthz
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+  worker:
+    image: twentycrm/twenty:v2.63.0@sha256:a3f361c289dcfd6e1fbca0201c49441199e0522fd0c8debe665af95c6a0b5269
+    command: ["yarn", "worker:prod"]
+    mem_limit: 600m
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    environment:
+      <<: *twenty-env
+      DISABLE_DB_MIGRATIONS: "true"
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+      NODE_OPTIONS: --max-old-space-size=450
+    depends_on:
+      db: { condition: service_healthy }
+      server: { condition: service_healthy }
+    restart: unless-stopped
+
+  db:
+    image: postgres:16@sha256:07abc3f43c9395b0bdbbab36bc25ddb0e8d83cd4fcafb5fb7d6abe14ff156dd8
+    mem_limit: 450m
+    command:
+      - postgres
+      - -c
+      - shared_buffers=96MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=48MB
+      - -c
+      - max_connections=80
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./pg-init:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_DB: ${PG_DATABASE_NAME:-default}
+      POSTGRES_USER: ${PG_DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD}
+      HUB_DB_PASSWORD: ${HUB_DB_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${PG_DATABASE_USER:-postgres} -h localhost -d postgres
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
+    mem_limit: 96m
+    command: ["redis-server", "--maxmemory", "64mb", "--maxmemory-policy", "noeviction", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.34.0@sha256:23a2ef85bc50853ab3093645d1d64679afd8887e89da5e48a88940c172591a4e
+    mem_limit: 64m
+    environment:
+      MP_MAX_MESSAGES: "2000"
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "127.0.0.1:33025:8025"
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  server-local-data:

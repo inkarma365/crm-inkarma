@@ -1,0 +1,17 @@
+# segreti: mai nel repo
+credenziali-*.md
+*.key
+.env
+.env.*
+!.env.example
+# build
+node_modules/
+dist/
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.twenty/
+coverage/
+playwright-report/
+test-results/
+*.log
