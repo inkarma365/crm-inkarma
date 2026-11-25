@@ -1,0 +1,30 @@
+/* Sistema visivo "Bolla" — generato a mano da tokens.ts, mantenere allineati. */
+:root {
+  --carta: #F4F6F9;
+  --foglio: #FFFFFF;
+  --inchiostro: #1B2140;
+  --inchiostro-tenue: #4A5275;
+  --copiativo: #4A3DCC;
+  --copiativo-scuro: #3A2FA8;
+  --copiativo-velo: #ECEAFB;
+  --scintilla: #F5A524;      /* solo segno grafico, sempre con testo accanto */
+  --scintilla-velo: #FFF4DE;
+  --si: #13795B;
+  --si-velo: #E3F3EC;
+  --no: #B42318;
+  --no-velo: #FBE9E7;
+  --filo: #D5DAE3;           /* bordi decorativi; i campi usano --inchiostro-tenue (≥3:1) */
+
+  --f-titoli: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-testo: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Verdana, sans-serif;
+  --t-s: 0.875rem;  /* 14 */
+  --t-m: 1rem;      /* 16 */
+  --t-l: 1.25rem;   /* 20 */
+  --t-xl: 1.75rem;  /* 28 */
+  --t-xxl: 2.5rem;  /* 40 */
+
+  --r-foglio: 6px;   /* fogli e campi: angoli appena smussati, come carta tagliata */
+  --r-timbro: 10px;  /* il timbro è l'unico elemento più tondo */
+  --passo: 8px;
+  --tocco: 44px;     /* area minima di tocco */
+}

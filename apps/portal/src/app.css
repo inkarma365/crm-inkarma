@@ -1,0 +1,845 @@
+/* Area clienti inKarma: sistema "Bolla". Mobile prima, poi schermi larghi. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--carta);
+  color: var(--inchiostro);
+  font-family: var(--f-testo);
+  font-size: var(--t-m);
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--f-titoli);
+  line-height: 1.15;
+  margin: 0;
+}
+
+p {
+  margin: 0 0 calc(var(--passo) * 1.5);
+}
+
+:focus-visible {
+  outline: 3px solid var(--copiativo);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.visivamente-nascosto {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.salta {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  background: var(--inchiostro);
+  color: var(--foglio);
+  padding: 10px 14px;
+  border-radius: var(--r-foglio);
+  z-index: 20;
+}
+.salta:focus {
+  top: 8px;
+}
+
+.testo-tenue {
+  color: var(--inchiostro-tenue);
+}
+
+.link {
+  color: var(--copiativo);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.link:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Marchio e testata ---------- */
+
+.marchio {
+  font-family: var(--f-titoli);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.testata {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: calc(var(--passo) * 1.5);
+  padding: calc(var(--passo) * 1) calc(var(--passo) * 2);
+  padding-top: max(var(--passo), env(safe-area-inset-top));
+  background: var(--carta);
+  border-bottom: 1px solid var(--filo);
+}
+
+.testata__commessa {
+  min-width: 0;
+}
+.testata__nome-commessa {
+  display: block;
+  font-size: var(--t-s);
+  color: var(--inchiostro-tenue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selettore {
+  max-width: 100%;
+  min-height: var(--tocco);
+  font: inherit;
+  font-size: var(--t-s);
+  color: var(--inchiostro);
+  background: var(--foglio);
+  border: 1px solid var(--inchiostro-tenue);
+  border-radius: var(--r-foglio);
+  padding: 0 10px;
+}
+
+.schede {
+  display: flex;
+  gap: var(--passo);
+  padding: 0 calc(var(--passo) * 2);
+  border-bottom: 1px solid var(--filo);
+}
+.schede__voce {
+  min-height: var(--tocco);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  color: var(--inchiostro-tenue);
+  text-decoration: none;
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+}
+.schede__voce.active {
+  color: var(--inchiostro);
+  border-bottom-color: var(--copiativo);
+}
+
+.app__contenuto {
+  flex: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(var(--passo) * 3) calc(var(--passo) * 2) calc(var(--passo) * 12);
+}
+
+/* ---------- Titoli di pagina ---------- */
+
+.titolo-pagina {
+  font-size: var(--t-xl);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: var(--passo);
+}
+
+.sommario {
+  font-size: var(--t-l);
+  line-height: 1.35;
+  max-width: 34ch;
+}
+
+.sottotitolo {
+  font-size: var(--t-l);
+  font-weight: 600;
+  margin: calc(var(--passo) * 4) 0 calc(var(--passo) * 1.5);
+}
+
+/* ---------- Bottoni ---------- */
+
+.bottone {
+  min-height: var(--tocco);
+  padding: 0 18px;
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-m);
+  border-radius: var(--r-foglio);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.bottone:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.bottone--pieno {
+  background: var(--copiativo);
+  color: var(--foglio);
+}
+.bottone--pieno:hover:not(:disabled) {
+  background: var(--copiativo-scuro);
+}
+.bottone--contorno {
+  background: var(--foglio);
+  color: var(--inchiostro);
+  border-color: var(--inchiostro-tenue);
+}
+.bottone--contorno:hover:not(:disabled) {
+  border-color: var(--inchiostro);
+  background: var(--carta);
+}
+.bottone--testo {
+  background: none;
+  color: var(--copiativo);
+  padding: 0 8px;
+}
+.bottone--testo:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.bottone--largo {
+  width: 100%;
+}
+.bottone--si {
+  color: var(--si);
+  border-color: var(--si);
+}
+.bottone--no {
+  color: var(--no);
+  border-color: var(--no);
+}
+.bottone--avanzamento {
+  color: var(--copiativo);
+  border-color: var(--copiativo);
+}
+
+/* ---------- Interruttore Da valutare / Tutti ---------- */
+
+.interruttore {
+  display: inline-flex;
+  margin: calc(var(--passo) * 1) 0 calc(var(--passo) * 3);
+  border: 1px solid var(--inchiostro-tenue);
+  border-radius: var(--r-foglio);
+  padding: 3px;
+  background: var(--foglio);
+}
+.interruttore button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-s);
+  color: var(--inchiostro-tenue);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.interruttore button[aria-pressed='true'] {
+  background: var(--inchiostro);
+  color: var(--foglio);
+}
+.conteggio {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* ---------- La bolla di consegna ---------- */
+
+.lead__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: calc(var(--passo) * 2);
+}
+
+.bolla {
+  position: relative;
+  background: var(--foglio);
+  border: 1px solid var(--filo);
+  border-radius: var(--r-foglio);
+}
+/* Chi aspetta un esito ha il bordo superiore acceso: il segno è sempre affiancato dal testo. */
+.bolla--attesa {
+  border-top: 3px solid var(--scintilla);
+}
+.bolla--selezionata {
+  border-color: var(--copiativo);
+  box-shadow: 0 0 0 1px var(--copiativo);
+}
+
+.bolla__corpo {
+  padding: calc(var(--passo) * 2) calc(var(--passo) * 2) calc(var(--passo) * 1.5);
+}
+
+.bolla__testa {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--passo);
+}
+.bolla__nome {
+  font-size: var(--t-l);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.bolla__link {
+  color: inherit;
+  text-decoration: none;
+}
+.bolla__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.bolla__data {
+  flex: none;
+  font-size: var(--t-s);
+  color: var(--inchiostro-tenue);
+}
+.bolla__ruolo {
+  color: var(--inchiostro-tenue);
+  margin: 2px 0 calc(var(--passo) * 1.5);
+}
+
+.bolla__richiamo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-s);
+  margin: calc(var(--passo) * 1.5) 0 0;
+}
+.scintilla {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--scintilla);
+  box-shadow: 0 0 0 3px var(--scintilla-velo);
+  flex: none;
+}
+
+/* La frase che giustifica la consegna, citata dalla conversazione. */
+.evidenza {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 26px;
+  font-style: italic;
+}
+.evidenza::before {
+  content: '“';
+  position: absolute;
+  left: 0;
+  top: -0.32em;
+  font-family: var(--f-titoli);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 2.4em;
+  line-height: 1;
+  color: var(--copiativo);
+}
+.evidenza p {
+  margin: 0;
+  max-width: 62ch;
+}
+.evidenza--grande {
+  font-size: var(--t-l);
+  line-height: 1.45;
+}
+
+/* Perforazione: tratteggio con due tacche semicircolari ai bordi del foglio. */
+.perforazione {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed var(--filo);
+  margin: 0 14px;
+}
+.perforazione::before,
+.perforazione::after {
+  content: '';
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--carta);
+  border: 1px solid var(--filo);
+}
+.perforazione::before {
+  left: -25px;
+  clip-path: inset(0 0 0 50%);
+}
+.perforazione::after {
+  right: -25px;
+  clip-path: inset(0 50% 0 0);
+}
+
+.bolla__matrice {
+  padding: calc(var(--passo) * 1.5) calc(var(--passo) * 2) calc(var(--passo) * 2);
+  background: color-mix(in srgb, var(--carta) 45%, var(--foglio));
+  border-radius: 0 0 var(--r-foglio) var(--r-foglio);
+}
+
+.matrice__azioni {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--passo);
+}
+
+/* ---------- Il timbro ---------- */
+
+.timbro {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 14px 7px;
+  border: 2px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  border-radius: var(--r-timbro);
+  transform: rotate(-2.5deg);
+  transform-origin: left center;
+  margin: 4px 0 2px 4px;
+}
+.timbro__esito {
+  font-family: var(--f-titoli);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+}
+.timbro__chi {
+  font-size: 0.8125rem;
+}
+.timbro--si {
+  color: var(--si);
+}
+.timbro--no {
+  color: var(--no);
+}
+.timbro--avanzamento {
+  color: var(--copiativo);
+}
+.timbro--attesa {
+  color: var(--inchiostro-tenue);
+}
+/* Unico movimento non richiesto: il timbro appena apposto. Risponde a un'azione dell'utente. */
+.timbro--nuovo {
+  animation: timbra 180ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+@keyframes timbra {
+  from {
+    transform: rotate(-9deg) scale(1.3);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-2.5deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ---------- Scheda di dettaglio ---------- */
+
+.indietro {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tocco);
+  color: var(--copiativo);
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: var(--passo);
+}
+.indietro::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  margin-right: 10px;
+}
+
+.scheda {
+  background: var(--foglio);
+  border: 1px solid var(--filo);
+  border-radius: var(--r-foglio);
+  padding: calc(var(--passo) * 2);
+}
+.scheda > .indietro {
+  margin-top: calc(var(--passo) * -1);
+}
+.scheda__nome {
+  font-size: var(--t-xl);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.scheda__ruolo {
+  color: var(--inchiostro-tenue);
+  margin: 4px 0 calc(var(--passo) * 2);
+}
+
+.contatti {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--passo) * 1.5);
+  margin: 0 0 calc(var(--passo) * 3);
+}
+.contatti dt {
+  font-size: var(--t-s);
+  color: var(--inchiostro-tenue);
+}
+.contatti dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.scheda__perche {
+  margin: 0 0 calc(var(--passo) * 3);
+}
+.scheda__perche figcaption {
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-s);
+  color: var(--inchiostro-tenue);
+  margin-bottom: var(--passo);
+}
+
+.scheda .perforazione {
+  margin: 0 -2px calc(var(--passo) * 2);
+}
+.scheda .perforazione::before {
+  left: -29px;
+}
+.scheda .perforazione::after {
+  right: -29px;
+}
+.scheda__esito .bolla__richiamo {
+  margin: 0 0 calc(var(--passo) * 1.5);
+}
+
+.avanzamento__scelte {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--passo);
+}
+
+.storico {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border-left: 2px solid var(--filo);
+}
+.storico__voce {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 0 0 calc(var(--passo) * 2);
+}
+.storico__voce::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--foglio);
+  border: 2px solid currentColor;
+}
+.storico__voce--si {
+  color: var(--si);
+}
+.storico__voce--no {
+  color: var(--no);
+}
+.storico__voce--avanzamento {
+  color: var(--copiativo);
+}
+.storico__esito {
+  font-family: var(--f-titoli);
+  font-weight: 600;
+}
+.storico__quando,
+.storico__motivo {
+  color: var(--inchiostro-tenue);
+  font-size: var(--t-s);
+}
+
+/* ---------- Pannello del motivo (foglio dal basso su telefono) ---------- */
+
+.foglio-modale {
+  border: 0;
+  padding: 0;
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  border-radius: 12px 12px 0 0;
+  background: var(--foglio);
+  color: var(--inchiostro);
+}
+.foglio-modale::backdrop {
+  background: rgb(27 33 64 / 0.45);
+}
+.foglio-modale__corpo {
+  padding: calc(var(--passo) * 3) calc(var(--passo) * 2) max(calc(var(--passo) * 2), env(safe-area-inset-bottom));
+}
+.foglio-modale__titolo {
+  font-size: var(--t-l);
+  font-weight: 700;
+  margin-bottom: var(--passo);
+}
+.foglio-modale__azioni {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--passo);
+  margin-top: calc(var(--passo) * 2);
+}
+
+.scelte {
+  border: 0;
+  margin: calc(var(--passo) * 2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.scelta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-foglio);
+  cursor: pointer;
+}
+.scelta input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--copiativo);
+  margin: 0;
+}
+.scelta--attiva {
+  border-color: var(--copiativo);
+  background: var(--copiativo-velo);
+}
+
+/* ---------- Campi ---------- */
+
+.campo {
+  display: grid;
+  gap: 6px;
+  margin-top: calc(var(--passo) * 2);
+}
+.campo__etichetta {
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-s);
+}
+.campo__input {
+  font: inherit;
+  min-height: var(--tocco);
+  padding: 10px 12px;
+  color: var(--inchiostro);
+  background: var(--foglio);
+  border: 1px solid var(--inchiostro-tenue);
+  border-radius: var(--r-foglio);
+  width: 100%;
+}
+.campo__input:focus-visible {
+  outline-offset: 0;
+}
+
+.errore-in-linea {
+  color: var(--no);
+  background: var(--no-velo);
+  border-radius: var(--r-foglio);
+  padding: 8px 12px;
+  margin: calc(var(--passo) * 1.5) 0 0;
+  font-size: var(--t-s);
+}
+.avviso-in-pagina {
+  background: var(--scintilla-velo);
+  border-radius: var(--r-foglio);
+  padding: 10px 12px;
+}
+
+/* ---------- Stati vuoti, caricamento, avvisi ---------- */
+
+.vuoto {
+  padding: calc(var(--passo) * 3) 0;
+}
+.vuoto p:first-child {
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  font-size: var(--t-l);
+  margin-bottom: 4px;
+}
+
+.caricamento {
+  min-height: 50dvh;
+}
+.caricamento--in-linea {
+  min-height: 160px;
+  border-radius: var(--r-foglio);
+  background: linear-gradient(90deg, var(--foglio) 0%, var(--carta) 50%, var(--foglio) 100%);
+  background-size: 200% 100%;
+  animation: respiro 1.4s ease-in-out infinite;
+  border: 1px solid var(--filo);
+}
+@keyframes respiro {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.avviso {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+.avviso__testo {
+  margin: 0;
+  background: var(--inchiostro);
+  color: var(--foglio);
+  padding: 12px 18px;
+  border-radius: var(--r-foglio);
+  font-family: var(--f-titoli);
+  font-weight: 600;
+  animation: compari 140ms ease-out both;
+}
+@keyframes compari {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- Accesso ---------- */
+
+.accesso {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--passo) * 3) calc(var(--passo) * 2);
+}
+.accesso__foglio {
+  width: 100%;
+  max-width: 440px;
+}
+.accesso__foglio .marchio {
+  margin-bottom: calc(var(--passo) * 5);
+}
+.accesso__titolo {
+  font-size: var(--t-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: calc(var(--passo) * 2);
+}
+.accesso__modulo .bottone {
+  margin-top: calc(var(--passo) * 2);
+}
+
+/* ---------- Schermi larghi ---------- */
+
+@media (min-width: 640px) {
+  .app__contenuto {
+    padding-top: calc(var(--passo) * 5);
+  }
+  .titolo-pagina,
+  .accesso__titolo {
+    font-size: var(--t-xxl);
+  }
+  .matrice__azioni {
+    grid-template-columns: auto auto;
+    justify-content: start;
+  }
+  .contatti {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .foglio-modale {
+    margin: auto;
+    max-width: 480px;
+    border-radius: var(--r-foglio);
+  }
+  .scheda {
+    padding: calc(var(--passo) * 3);
+  }
+}
+
+/* Su telefono e tablet il dettaglio sostituisce l'elenco; su schermo largo stanno affiancati. */
+@media (max-width: 1099px) {
+  .lead--con-dettaglio .lead__elenco {
+    display: none;
+  }
+}
+@media (min-width: 1100px) {
+  .app__contenuto:has(.lead--con-dettaglio) {
+    max-width: 1240px;
+  }
+  .lead--con-dettaglio {
+    display: grid;
+    grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+    gap: calc(var(--passo) * 4);
+    align-items: start;
+  }
+  .lead__dettaglio {
+    position: sticky;
+    top: 80px;
+  }
+  .lead__dettaglio .indietro {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -27,6 +27,8 @@ x-twenty-env: &twenty-env
   EMAIL_SMTP_NO_TLS: "true"
   EMAIL_FROM_ADDRESS: ${EMAIL_FROM_ADDRESS:-crm@inkarma.test}
   EMAIL_FROM_NAME: ${EMAIL_FROM_NAME:-CRM inKarma}
+  # Protezione SSRF attiva: tra gli host interni Twenty può chiamare solo l'Hub (webhook).
+  OUTBOUND_HTTP_ALLOWED_INTERNAL_HOSTS: hub
 
 services:
   server:
@@ -106,6 +108,31 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  hub:
+    build:
+      context: ../..
+      dockerfile: apps/hub/Dockerfile
+    image: crm-inkarma/hub:dev
+    mem_limit: 220m
+    env_file:
+      - path: ./hub.env
+        required: true
+    environment:
+      NODE_ENV: production
+      PORT: "3010"
+      PUBLIC_URL: ${HUB_PUBLIC_URL:-http://localhost:33010}
+      HUB_DATABASE_URL: postgres://hub:${HUB_DB_PASSWORD}@db:5432/hub
+      TWENTY_URL: http://server:3000
+      SERVICE_SMTP_URL: smtp://mailpit:1025
+      SERVICE_MAIL_FROM: inKarma <servizio@inkarma.test>
+      # Sandbox: ogni email di servizio finisce nella casella di prova (visibile in Mailpit).
+      SERVICE_MAIL_REDIRECT_TO: ${SERVICE_MAIL_REDIRECT_TO:-casella-prova@inkarma.test}
+    ports:
+      - "127.0.0.1:33010:3010"
+    depends_on:
+      db: { condition: service_healthy }
     restart: unless-stopped
 
   mailpit:
