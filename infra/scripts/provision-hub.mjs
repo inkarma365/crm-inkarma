@@ -71,6 +71,8 @@ const { createWebhook } = await gql(
         'appartenenza.created',
         'appartenenza.updated',
         'opposizione.created',
+        'importLotto.created',
+        'importLotto.updated',
         'commessa.created',
         'commessa.updated',
       ],
