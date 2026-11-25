@@ -14,6 +14,7 @@ const SINGULAR: Record<string, string> = {
   consegneLead: 'consegnaLead',
   feedbackLeads: 'feedbackLead',
   opposizioni: 'opposizione',
+  importLotti: 'importLotto',
 };
 const PLURAL_OF = Object.fromEntries(Object.entries(SINGULAR).map(([p, s]) => [s, p]));
 // relazioni espandibili con depth >= 1: campo → collezione

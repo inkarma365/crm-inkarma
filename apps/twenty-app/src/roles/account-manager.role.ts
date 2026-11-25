@@ -24,6 +24,7 @@ export default defineRole({
       scrittura(ID['campagna']),
       scrittura(ID['appartenenza']),
       scrittura(ID['consegnaLead']),
+      scrittura(ID['importLotto']),
       soloAggiunta(ID['feedbackLead']),
       soloAggiunta(ID['opposizione']),
       lettura(ID['servizio']),

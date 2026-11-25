@@ -12,7 +12,7 @@ const db = createDb(config.HUB_DATABASE_URL);
 const applied = await migrateToLatest(db);
 const twenty = new TwentyClient(config.TWENTY_URL, config.TWENTY_API_KEY);
 const mailer = createSmtpMailer({ url: config.SERVICE_SMTP_URL, from: config.SERVICE_MAIL_FROM, redirectTo: config.SERVICE_MAIL_REDIRECT_TO });
-const deps = { db, twenty, mailer, publicUrl: config.PUBLIC_URL };
+const deps = { db, twenty, mailer, publicUrl: config.PUBLIC_URL, twentyUrl: config.TWENTY_URL };
 const handlers = buildHandlers(deps);
 
 // Processore eventi: un ciclo per volta, risvegliato dai webhook o dal timer.

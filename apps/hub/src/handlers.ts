@@ -4,8 +4,9 @@ import type { ServiceMailer } from './notify/mailer.ts';
 import { syncCommessaMembers } from './portal/auth.ts';
 import { commessaEmails, notificaConsegna } from './domain/consegne.ts';
 import type { TwentyClient } from './twenty/client.ts';
+import { gestisciImport } from './import/handler.ts';
 
-type Deps = { db: Db; twenty: TwentyClient; mailer: ServiceMailer; publicUrl: string };
+type Deps = { db: Db; twenty: TwentyClient; mailer: ServiceMailer; publicUrl: string; twentyUrl?: string };
 
 export const syncCommessa = async (deps: Deps, commessaId: string) => {
   const c = await deps.twenty.get<{ id: string; nome: string; stato: string; referenteEmail: { primaryEmail?: string; additionalEmails?: string[] } }>(
@@ -32,6 +33,8 @@ export const buildHandlers = (deps: Deps): Record<string, EventHandler> => ({
     } else if (p.objectName === 'consegnaLead' && p.action === 'created') {
       const r = await notificaConsegna(deps, p.recordId);
       if (r === 'errore') throw new Error('invio notifica non riuscito per almeno un destinatario');
+    } else if (p.objectName === 'importLotto') {
+      await gestisciImport({ db: deps.db, twenty: deps.twenty, twentyUrl: deps.twentyUrl ?? 'http://server:3000' }, p.recordId);
     }
   },
 });

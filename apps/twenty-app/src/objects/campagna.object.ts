@@ -29,5 +29,6 @@ export default defineObject({
     manyToOne(ID['campagna.commessa'], 'commessa', 'Commessa', 'IconBriefcase', ID['commessa'], ID['commessa.campagne'], OnDeleteAction.CASCADE),
     manyToOne(ID['campagna.servizio'], 'servizio', 'Servizio promosso', 'IconPackage', ID['servizio'], ID['servizio.campagne']),
     oneToMany(ID['campagna.lead'], 'lead', 'Lead', 'IconUserSearch', ID['appartenenza'], ID['appartenenza.campagna']),
+    oneToMany(ID['campagna.importLotti'], 'importLotti', 'Import', 'IconFileImport', ID['importLotto'], ID['importLotto.campagna']),
   ],
 });
