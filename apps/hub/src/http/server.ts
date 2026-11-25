@@ -117,7 +117,8 @@ export const buildServer = async (deps: Deps) => {
 
   const setSessionCookie = (reply: FastifyReply, token: string) =>
     reply.setCookie(COOKIE, token, {
-      path: '/',
+      // Solo le API del portale ricevono il cookie: Twenty, sullo stesso dominio, non lo vede mai.
+      path: '/api/portale',
       httpOnly: true,
       sameSite: 'lax',
       secure: config.NODE_ENV === 'production',
@@ -172,7 +173,7 @@ export const buildServer = async (deps: Deps) => {
 
   app.post('/api/portale/esci', { preHandler: requireSession }, async (req, reply) => {
     await revokeSession(db, req.session!.idHash);
-    reply.clearCookie(COOKIE, { path: '/' });
+    reply.clearCookie(COOKIE, { path: '/api/portale' });
     return { ok: true };
   });
 
