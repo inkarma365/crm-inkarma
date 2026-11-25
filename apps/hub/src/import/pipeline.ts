@@ -87,6 +87,15 @@ export const analizza = async (
     });
     for (const p of r.items) persone.set(p.emails.primaryEmail.toLowerCase(), { id: p.id, nome: `${p.name.firstName} ${p.name.lastName}`.trim() });
   }
+  // Persone già presenti in questa campagna per altre vie (manuale, API, altri import): stessa campagna = stesso lead.
+  const personaInCampagna = new Map<string, string>();
+  for (const parte of chunk([...persone.values()].map((p) => p.id), 50)) {
+    const r = await twenty.list<{ id: string; personaId: string }>('appartenenze', {
+      filter: `and(campagnaId[eq]:${fv(args.campagnaId)},personaId[in]:[${parte.map(fv).join(',')}])`,
+      limit: 60,
+    });
+    for (const a of r.items) personaInCampagna.set(a.personaId, a.id);
+  }
   // Omonimi con email diversa (nel CRM): possibile stessa persona → revisione, mai fusione automatica.
   const cognomi = [...new Set(righe.map((r) => r.cognome).filter(Boolean))];
   const omonimi = new Map<string, string>();
@@ -124,6 +133,12 @@ export const analizza = async (
       continue;
     }
     const esistente = r.email ? persone.get(r.email) : undefined;
+    if (esistente && personaInCampagna.has(esistente.id)) {
+      r.esito = 'GIA_IN_CAMPAGNA';
+      r.personaId = esistente.id;
+      r.appartenenzaId = personaInCampagna.get(esistente.id)!;
+      continue;
+    }
     if (esistente) {
       r.esito = 'PERSONA_ESISTENTE';
       r.personaId = esistente.id;

@@ -22,6 +22,8 @@ export default defineObject({
       name: 'file',
       label: 'File (CSV o Excel)',
       icon: 'IconFileSpreadsheet',
+      // Un file per import: l'anteprima e l'idempotenza si riferiscono a un solo contenuto.
+      universalSettings: { maxNumberOfValues: 1 },
     },
     select(ID['importLotto.formato'], 'formato', 'Formato', 'IconTemplate', [
       { value: 'AUTOMATICO', label: 'Riconosci colonne', color: 'gray' },

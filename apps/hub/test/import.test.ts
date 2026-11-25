@@ -43,7 +43,14 @@ describe('import lead', () => {
       async () => 'VALIDO',
     );
     const per = Object.fromEntries(a.righe.map((r) => [r.n, r.esito]));
-    expect(per).toEqual({ 2: 'NUOVO', 3: 'ERRORE', 4: 'DUPLICATO_NEL_FILE', 5: 'ESCLUSO_OPPOSIZIONE', 6: 'PERSONA_ESISTENTE', 7: 'DA_VERIFICARE' });
+    // Paolo Ferri è già nella campagna A (inserito senza chiave di import): non va duplicato.
+    expect(per).toEqual({ 2: 'NUOVO', 3: 'ERRORE', 4: 'DUPLICATO_NEL_FILE', 5: 'ESCLUSO_OPPOSIZIONE', 6: 'GIA_IN_CAMPAGNA', 7: 'DA_VERIFICARE' });
+    const b = await analizza(
+      twenty,
+      { nomeFile: 'lead.csv', contenuto: Buffer.from(CSV), formato: 'AUTOMATICO', campagnaId: seed.campB.id, commessaId: seed.B.id },
+      async () => 'VALIDO',
+    );
+    expect(b.righe.find((r) => r.n === 6)!.esito).toBe('PERSONA_ESISTENTE'); // stessa persona, altra campagna: nuovo lead
     expect(a.righe.find((r) => r.n === 3)!.messaggi[0]).toMatch(/Email non valida/);
     expect(a.colonne.find((c) => c.intestazione === 'Note')!.campo).toBe('evidenza');
   });
@@ -67,7 +74,7 @@ describe('import lead', () => {
     await gestisciImport(deps, lotto.id);
     expect(fake.db.importLotti!.get(lotto.id)!.stato).toBe('COMPLETATO');
     const dopo = fake.db.appartenenze!.size;
-    expect(dopo - prima).toBe(3); // Marta (nuova), Paolo (persona esistente), Sara omonima (in revisione)
+    expect(dopo - prima).toBe(2); // Marta (nuova) e Sara omonima (in revisione); Paolo è già in campagna
     const sara = [...fake.db.appartenenze!.values()].find((a) => a.chiaveImport === `${seed.campA.id}:sara.altra@conti.test`)!;
     expect(sara.revisione).toBe('DA_VERIFICARE');
 
