@@ -29,12 +29,12 @@ export const accedi = async (page: Page, email: string) => {
       if (new Date(m.Created) < prima) continue;
       const msg = await (await fetch(`${MP}/message/${m.ID}`)).json();
       if (msg.Headers?.['X-Inkarma-Destinatario']?.[0] !== email) continue;
-      link = /http:\/\/\S+#t=[A-Za-z0-9_-]+/.exec(msg.Text)?.[0];
+      link = /https?:\/\/\S+#t=[A-Za-z0-9_-]+/.exec(msg.Text)?.[0];
       if (link) break;
     }
     if (!link) await new Promise((r) => setTimeout(r, 500));
   }
   if (!link) throw new Error(`nessun link di accesso per ${email}`);
-  await page.goto(link.replace(/^http:\/\/[^/]+/, ''));
+  await page.goto(link.replace(/^https?:\/\/[^/]+/, ''));
   await page.getByRole('heading', { name: 'Lead consegnati' }).waitFor();
 };

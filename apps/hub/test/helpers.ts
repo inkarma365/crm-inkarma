@@ -43,6 +43,8 @@ export const testConfig: Config = {
   SERVICE_MAIL_FROM: 'test@inkarma.test',
   SERVICE_MAIL_REDIRECT_TO: undefined,
   PORTAL_DIST_DIR: '/inesistente',
+  PORTALE_ACCESSI_MAX_IP: 50,
+  PORTALE_ACCESSI_MAX_EMAIL: 50,
 };
 
 /** Estrae il token dal link nell'ultima email di accesso. */

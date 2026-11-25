@@ -19,6 +19,10 @@ const Config = z.object({
   /** In sviluppo ogni email di servizio finisce in questa casella, qualunque sia il destinatario. */
   SERVICE_MAIL_REDIRECT_TO: z.string().optional(),
   PORTAL_DIST_DIR: z.string().default('../portal/dist'),
+  /** Richieste di link di accesso per IP ogni 15 minuti (anti-abuso). */
+  PORTALE_ACCESSI_MAX_IP: z.coerce.number().int().positive().default(5),
+  /** Link di accesso inviati alla stessa email ogni 15 minuti. */
+  PORTALE_ACCESSI_MAX_EMAIL: z.coerce.number().int().positive().default(3),
 });
 export type Config = z.infer<typeof Config>;
 

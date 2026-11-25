@@ -59,7 +59,14 @@ export const buildServer = async (deps: Deps) => {
   });
 
   await app.register(cookie);
-  await app.register(rateLimit, { global: false });
+  await app.register(rateLimit, {
+    global: false,
+    // Risposta nello stesso formato degli altri errori del portale, in italiano e con l'azione da fare.
+    errorResponseBuilder: (_req, ctx) => ({
+      statusCode: 429,
+      errore: `Troppe richieste in poco tempo. Riprova tra ${Math.max(1, Math.ceil(ctx.ttl / 60_000))} minuti.`,
+    }),
+  });
 
   app.get('/healthz', { logLevel: 'warn' }, async () => ({ ok: true }));
 
@@ -119,7 +126,7 @@ export const buildServer = async (deps: Deps) => {
 
   app.post(
     '/api/portale/accesso',
-    { config: { rateLimit: { max: 5, timeWindow: '15 minutes' } } },
+    { config: { rateLimit: { max: config.PORTALE_ACCESSI_MAX_IP, timeWindow: '15 minutes' } } },
     async (req, reply) => {
       const body = z.object({ email: z.email() }).safeParse(req.body);
       if (!body.success) return reply.code(400).send({ errore: 'Inserisci un indirizzo email valido' });
@@ -131,7 +138,7 @@ export const buildServer = async (deps: Deps) => {
         .where('u.email', '=', email)
         .where('t.created_at', '>', new Date(Date.now() - 15 * 60_000))
         .executeTakeFirst();
-      if (Number(recent?.n ?? 0) < 3) {
+      if (Number(recent?.n ?? 0) < config.PORTALE_ACCESSI_MAX_EMAIL) {
         const issued = await issueLoginToken(db, email);
         if (issued) {
           const link = `${config.PUBLIC_URL}/portale/accedi#t=${issued.token}`;

@@ -131,6 +131,9 @@ services:
       SERVICE_MAIL_FROM: inKarma <servizio@inkarma.test>
       # Sandbox: ogni email di servizio finisce nella casella di prova (visibile in Mailpit).
       SERVICE_MAIL_REDIRECT_TO: ${SERVICE_MAIL_REDIRECT_TO:-casella-prova@inkarma.test}
+      # Sandbox: limiti più larghi per i test e2e ripetuti (in produzione restano i default 5 e 3).
+      PORTALE_ACCESSI_MAX_IP: ${PORTALE_ACCESSI_MAX_IP:-60}
+      PORTALE_ACCESSI_MAX_EMAIL: ${PORTALE_ACCESSI_MAX_EMAIL:-30}
     ports:
       - "127.0.0.1:33010:3010"
     depends_on:
