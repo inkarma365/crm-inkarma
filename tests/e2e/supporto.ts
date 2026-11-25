@@ -17,7 +17,7 @@ export const twenty = async (method: string, path: string, body?: unknown) => {
 
 /** Richiede il link di accesso dal portale e lo legge dalla casella di prova (Mailpit). */
 export const accedi = async (page: Page, email: string) => {
-  const prima = new Date();
+  const prima = new Date(Date.now() - 60_000); // margine per l'orologio della VPS
   await page.goto('/portale/accesso');
   await page.getByLabel('La tua email di lavoro').fill(email);
   await page.getByRole('button', { name: 'Mandami il link' }).click();
@@ -27,8 +27,9 @@ export const accedi = async (page: Page, email: string) => {
     const res = await (await fetch(`${MP}/search?query=${encodeURIComponent(`subject:"link di accesso" to:casella-prova@inkarma.test`)}&limit=5`)).json();
     for (const m of res.messages ?? []) {
       if (new Date(m.Created) < prima) continue;
+      const headers = await (await fetch(`${MP}/message/${m.ID}/headers`)).json();
+      if (headers['X-Inkarma-Destinatario']?.[0] !== email) continue;
       const msg = await (await fetch(`${MP}/message/${m.ID}`)).json();
-      if (msg.Headers?.['X-Inkarma-Destinatario']?.[0] !== email) continue;
       link = /https?:\/\/\S+#t=[A-Za-z0-9_-]+/.exec(msg.Text)?.[0];
       if (link) break;
     }

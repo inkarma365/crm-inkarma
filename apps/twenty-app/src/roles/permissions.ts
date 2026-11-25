@@ -31,12 +31,17 @@ export const scrittura = (objectUniversalIdentifier: string, extra: Record<strin
   ...extra,
 });
 
-/** Solo inserimento + lettura: per registri che non si riscrivono (opposizioni, storico esiti). */
+/**
+ * Registri che non si riscrivono (opposizioni, storico esiti): lettura e inserimento, mai cancellazione.
+ * Limite verificato su Twenty v2.63: creare un record richiede anche il permesso di modifica
+ * (canCreate senza canUpdate → 403). L'immutabilità è quindi garantita dal processo (l'Hub non
+ * aggiorna mai questi record) e dall'audit, non dal permesso. Vedi docs/CAPACITA-TWENTY-v2.63.md.
+ */
 export const soloAggiunta = (objectUniversalIdentifier: string) => ({
   objectUniversalIdentifier,
   canReadAllRecords: true,
   canCreateAllRecords: true,
-  canUpdateAllRecords: false,
+  canUpdateAllRecords: true,
   canSoftDeleteAllRecords: false,
   canDestroyAllRecords: false,
 });

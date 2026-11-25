@@ -26,7 +26,7 @@ import {
 } from '../portal/auth.ts';
 import { CommessaScope, ESITI_PORTALE, MOTIVI_RIFIUTO } from '../portal/scope.ts';
 import { InputError, registraEsito } from '../domain/consegne.ts';
-import type { TwentyClient } from '../twenty/client.ts';
+import { TwentyError, type TwentyClient } from '../twenty/client.ts';
 import { parseTwentyWebhook, verifyTwentyWebhook } from '../twenty/webhook.ts';
 
 declare module 'fastify' {
@@ -251,6 +251,10 @@ export const buildServer = async (deps: Deps) => {
 
   app.setErrorHandler((err, req, reply) => {
     req.log.error({ err }, 'errore non gestito');
+    // Errori del CRM: mai dettagli interni verso il browser.
+    if (err instanceof TwentyError) {
+      return reply.code(502).send({ errore: 'Il CRM non ha accettato l’operazione. Riprova tra qualche minuto; se il problema resta, scrivi al tuo referente inKarma.' });
+    }
     const status = (err as { statusCode?: number }).statusCode;
     if (status && status < 500) return reply.code(status).send({ errore: err instanceof Error ? err.message : 'Richiesta non valida' });
     return reply.code(500).send({ errore: 'Errore interno: riprova tra qualche minuto' });
