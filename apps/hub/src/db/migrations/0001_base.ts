@@ -1,7 +1,6 @@
 import { type Kysely, sql } from 'kysely';
 
 export async function up(db: Kysely<unknown>): Promise<void> {
-  await sql`CREATE EXTENSION IF NOT EXISTS pgcrypto`.execute(db);
 
   await db.schema
     .createTable('event_log')
@@ -17,6 +16,14 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('payload', 'jsonb', (c) => c.notNull())
     .addColumn('processed_at', 'timestamptz')
     .addColumn('process_error', 'text')
+    .addColumn('attempts', 'integer', (c) => c.notNull().defaultTo(0))
+    .addColumn('next_attempt_at', 'timestamptz', (c) => c.notNull().defaultTo(sql`now()`))
+    .execute();
+  await db.schema
+    .createIndex('event_log_pending')
+    .on('event_log')
+    .columns(['next_attempt_at', 'seq'])
+    .where(sql.ref('processed_at'), 'is', null)
     .execute();
   await db.schema.createIndex('event_log_type_commessa').on('event_log').columns(['event_type', 'commessa_id']).execute();
 

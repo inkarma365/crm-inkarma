@@ -24,15 +24,16 @@
     "nodemailer": "10.6.1",
     "papaparse": "5.7.1",
     "pg": "8.23.1",
-    "pg-boss": "12.39.0",
     "pino": "10.4.0",
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.17",
     "@types/node": "24.10.1",
     "@types/nodemailer": "*",
     "@types/papaparse": "*",
     "@types/pg": "*",
+    "kysely-pglite-dialect": "1.4.0",
     "typescript": "7.0.2",
     "vitest": "5.1.1"
   }

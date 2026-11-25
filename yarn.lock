@@ -5,6 +5,13 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
+"@electric-sql/pglite@npm:0.5.17":
+  version: 0.5.17
+  resolution: "@electric-sql/pglite@npm:0.5.17"
+  checksum: 10c0/a109204ae7ad8a2033161f17551c0ae97422262a06b0e2a22352b1b704f0894feea49e44e99412838471fe633e6f56c1f2caa966a716726da35fb52620e5870d
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:2.0.0-beta.2":
   version: 2.0.0-beta.2
   resolution: "@emnapi/core@npm:2.0.0-beta.2"
@@ -193,6 +200,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@inkarma/hub@workspace:apps/hub"
   dependencies:
+    "@electric-sql/pglite": "npm:0.5.17"
     "@fastify/cookie": "npm:11.1.5"
     "@fastify/rate-limit": "npm:11.3.0"
     "@fastify/static": "npm:10.1.12"
@@ -204,10 +212,10 @@ __metadata:
     exceljs: "npm:4.4.0"
     fastify: "npm:5.12.8"
     kysely: "npm:0.29.9"
+    kysely-pglite-dialect: "npm:1.4.0"
     nodemailer: "npm:10.6.1"
     papaparse: "npm:5.7.1"
     pg: "npm:8.23.1"
-    pg-boss: "npm:12.39.0"
     pino: "npm:10.4.0"
     typescript: "npm:7.0.2"
     vitest: "npm:5.1.1"
@@ -1073,15 +1081,6 @@ __metadata:
     vitest: "npm:5.1.1"
   languageName: unknown
   linkType: soft
-
-"cron-parser@npm:^5.10.6":
-  version: 5.10.6
-  resolution: "cron-parser@npm:5.10.6"
-  dependencies:
-    luxon: "npm:^3.7.2"
-  checksum: 10c0/0f56904065b2aa678d1cea66f3667ee646b006b5c68c386ec61e5241f4d5ebbdb8d1afcd614e60abe261dbf47b811315de411111ac93ea6e9261634e078f8218
-  languageName: node
-  linkType: hard
 
 "data-view-buffer@npm:^1.0.2":
   version: 1.0.2
@@ -2063,6 +2062,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely-pglite-dialect@npm:1.4.0":
+  version: 1.4.0
+  resolution: "kysely-pglite-dialect@npm:1.4.0"
+  peerDependencies:
+    "@electric-sql/pglite": ^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0
+    kysely: ">=0.23.0"
+  checksum: 10c0/a2b47ae4ed097e5ad8612f84f18a139ffa9917aa491345e8ddb8323397565a1596d80d95817a558b85ea4d612cbd94a3b751ae56662dc8b95e534c24e9cbd6ef
+  languageName: node
+  linkType: hard
+
 "kysely@npm:0.29.9":
   version: 0.29.9
   resolution: "kysely@npm:0.29.9"
@@ -2325,13 +2334,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.7.2":
-  version: 3.7.2
-  resolution: "luxon@npm:3.7.2"
-  checksum: 10c0/ed8f0f637826c08c343a29dd478b00628be93bba6f068417b1d8896b61cb61c6deacbe1df1e057dbd9298334044afa150f9aaabbeb3181418ac8520acfdc2ae2
-  languageName: node
-  linkType: hard
-
 "magic-string@npm:^1.4.5":
   version: 1.4.5
   resolution: "magic-string@npm:1.4.5"
@@ -2455,13 +2457,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"non-error@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "non-error@npm:0.1.0"
-  checksum: 10c0/acaba9060f2682037b85241d914bbbf17210024e5bcce9f80ce104fec8f2946a19222b0503e3c1a5ed6d172354cf772f474211680c9d8559e4868cdd8e9d878d
-  languageName: node
-  linkType: hard
-
 "nopt@npm:^10.0.0":
   version: 10.0.1
   resolution: "nopt@npm:10.0.1"
@@ -2574,22 +2569,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-boss@npm:12.39.0":
-  version: 12.39.0
-  resolution: "pg-boss@npm:12.39.0"
-  dependencies:
-    cron-parser: "npm:^5.10.6"
-    pg: "npm:^8.23.1"
-    rrule-temporal: "npm:^2.3.0"
-    serialize-error: "npm:^13.1.0"
-  peerDependencies:
-    "@opentelemetry/api": ^1.9.0
-  bin:
-    pg-boss: dist/cli.js
-  checksum: 10c0/04ad1f34f53442e82b4887c9a686bf6b761df73ddcd4895fa30e8b4506e4c69cd36f9e648ee769335a5f07481e3e020121e967379618a2478dfdfea5d320895d
-  languageName: node
-  linkType: hard
-
 "pg-cloudflare@npm:^1.4.1":
   version: 1.4.1
   resolution: "pg-cloudflare@npm:1.4.1"
@@ -2640,7 +2619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:8.23.1, pg@npm:^8.23.1":
+"pg@npm:8.23.1":
   version: 8.23.1
   resolution: "pg@npm:8.23.1"
   dependencies:
@@ -2970,15 +2949,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rrule-temporal@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "rrule-temporal@npm:2.3.0"
-  dependencies:
-    temporal-spec: "npm:^1.0.0"
-  checksum: 10c0/298ad3688a3bf8d1995cde3c260d08fc29d3527522389a2b73e2d70f3c3e84460e6929098b6096f905e7ad2a60abd14dce95169db6101442dd54aa8869175427
-  languageName: node
-  linkType: hard
-
 "safe-array-concat@npm:^1.1.3":
   version: 1.1.4
   resolution: "safe-array-concat@npm:1.1.4"
@@ -3067,16 +3037,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10c0/bf0a4d16eb067e5391323649e46b4a268644d7f8ee88e37c7668d35e861ec145b6e7df576d898007fc0d9a2cedcbc33f71460aa3bbea18eedfa5af58c064d7fe
-  languageName: node
-  linkType: hard
-
-"serialize-error@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "serialize-error@npm:13.1.0"
-  dependencies:
-    non-error: "npm:^0.1.0"
-    type-fest: "npm:^5.4.1"
-  checksum: 10c0/83ddb8e71f1ab5536b753996fb4d0a7861843c11ad3adad1ed5816ede6e04e73121d5444a2f4492c910d3bb1ef3f50895c323589e66bfde7f903648d216a7fa9
   languageName: node
   linkType: hard
 
@@ -3290,13 +3250,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tagged-tag@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "tagged-tag@npm:1.0.0"
-  checksum: 10c0/91d25c9ffb86a91f20522cefb2cbec9b64caa1febe27ad0df52f08993ff60888022d771e868e6416cf2e72dab68449d2139e8709ba009b74c6c7ecd4000048d1
-  languageName: node
-  linkType: hard
-
 "tar-stream@npm:^2.2.0":
   version: 2.2.0
   resolution: "tar-stream@npm:2.2.0"
@@ -3320,13 +3273,6 @@ __metadata:
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
   checksum: 10c0/41324dc475f655e6a322729dacac14e3114ed4b18cba350be5d1eb52b1aa2794a1c78c2a5b7f49d3d15f53c058158168121eaf6c5d2f75a0a9565b344bf3a18a
-  languageName: node
-  linkType: hard
-
-"temporal-spec@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "temporal-spec@npm:1.0.1"
-  checksum: 10c0/99f6bfe4a8e59cd0664d0e97706798a1e10d42b1b682da9b60778a4cb9a23362da01ea3d83a674ef426ed743bbab835e2e3d1acea5d2d4a9eabe33863237b014
   languageName: node
   linkType: hard
 
@@ -3401,15 +3347,6 @@ __metadata:
   version: 2.9.1
   resolution: "tslib@npm:2.9.1"
   checksum: 10c0/8ff46e7a4d19fa62c23483c89cf5ccc3906e742ef6e6d60bd3826b686143b300b4f6f04161cc1cf31a6b11fe70e1058ae4d4e4a108b5c68326d469684736a83c
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^5.4.1":
-  version: 5.10.0
-  resolution: "type-fest@npm:5.10.0"
-  dependencies:
-    tagged-tag: "npm:^1.0.0"
-  checksum: 10c0/313c5d0e37a3f1cc82e942f3228f897623c8b54a63a8a95532d0c2c21ab200793caa70bd8904a83fd713eb28d87ba32468b09b345ef6efa25cecb345b467226f
   languageName: node
   linkType: hard
 

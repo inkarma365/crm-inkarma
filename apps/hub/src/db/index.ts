@@ -1,4 +1,5 @@
-import { Kysely, Migrator, PostgresDialect, type Migration, type MigrationProvider } from 'kysely';
+import { Kysely, PostgresDialect } from 'kysely';
+import { Migrator, type Migration, type MigrationProvider } from 'kysely/migration';
 import pg from 'pg';
 import type { DB } from './schema.ts';
 import * as m0001 from './migrations/0001_base.ts';

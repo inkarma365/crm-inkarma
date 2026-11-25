@@ -16,6 +16,8 @@ export interface EventLogTable {
   payload: unknown;
   processed_at: Date | null;
   process_error: string | null;
+  attempts: Generated<number>;
+  next_attempt_at: Generated<Date>;
 }
 
 export type EffectStatus = 'pending' | 'in_flight' | 'done' | 'failed' | 'uncertain';
