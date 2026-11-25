@@ -8,7 +8,7 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push -q "$REMOTE:data/repo.git" "$BRANCH"
 # Portale compilato in locale (il build sulla VPS satura la memoria della sandbox).
 yarn workspace @inkarma/portal build >/dev/null
-rsync -a --delete apps/portal/dist/ "$REMOTE:data/repo/apps/portal/dist/"
+rsync -a --delete --chmod=D755,F644 apps/portal/dist/ "$REMOTE:data/repo/apps/portal/dist/"
 ssh "$REMOTE" bash -s -- "$BRANCH" "$@" <<'EOF'
 set -euo pipefail
 export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
