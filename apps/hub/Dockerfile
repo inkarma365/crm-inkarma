@@ -5,6 +5,7 @@ WORKDIR /app
 RUN corepack enable
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY packages/contracts/package.json packages/contracts/
+COPY packages/ui-tokens/package.json packages/ui-tokens/
 COPY apps/hub/package.json apps/hub/
 COPY apps/portal/package.json apps/portal/
 RUN yarn workspaces focus @inkarma/hub --production
@@ -14,6 +15,7 @@ WORKDIR /app
 RUN corepack enable
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY packages/contracts/package.json packages/contracts/
+COPY packages/ui-tokens/package.json packages/ui-tokens/
 COPY apps/hub/package.json apps/hub/
 COPY apps/portal/package.json apps/portal/
 RUN yarn workspaces focus @inkarma/portal
