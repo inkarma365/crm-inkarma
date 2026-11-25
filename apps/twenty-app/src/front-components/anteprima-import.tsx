@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { defineFrontComponent } from 'twenty-sdk/define';
 import { enqueueSnackbar, openCommandConfirmationModal, useSelectedRecordIds } from 'twenty-sdk/front-component';
-import { CoreApiClient } from 'twenty-client-sdk/core';
+import { interroga, modifica } from 'src/front-components/lib/api';
 import { Button } from 'twenty-ui/primitives/input';
 import { Tag } from 'twenty-ui/primitives/data-display';
 import { Skeleton } from 'twenty-ui/primitives/feedback';
@@ -50,10 +50,10 @@ const AnteprimaImport = () => {
   const carica = useCallback(async () => {
     if (!id) return;
     try {
-      const r = await new CoreApiClient().query({
+      const r = await interroga<{ importLotto: Lotto }>({
         importLotto: { __args: { filter: { id: { eq: id } } }, id: true, stato: true, messaggio: true, riepilogo: true, campagna: { nome: true } },
-      } as never);
-      setLotto((r as { importLotto: Lotto }).importLotto);
+      });
+      setLotto(r.importLotto);
       setErrore(null);
     } catch (e) {
       setErrore(messaggioErrore(e));
@@ -82,7 +82,7 @@ const AnteprimaImport = () => {
     }
     setInvio(true);
     try {
-      await new CoreApiClient().mutation({ updateImportLotto: { __args: { id: lotto.id, data: { stato } }, id: true } } as never);
+      await modifica({ updateImportLotto: { __args: { id: lotto.id, data: { stato } }, id: true } });
       await enqueueSnackbar({ message: stato === 'CONFERMATO' ? 'Import avviato' : 'Ricalcolo avviato', variant: 'success' });
       await carica();
     } catch (e) {

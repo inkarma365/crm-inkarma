@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { CAMPI_ECONOMICI, lettura } from 'src/roles/permissions';
 
 // Agente AI: legge per proporre, non scrive fatti verificati e non vede condizioni economiche libere.
 // I prezzi utilizzabili arrivano solo dai servizi venduti della commessa.

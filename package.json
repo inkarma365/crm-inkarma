@@ -14,11 +14,13 @@
     "typecheck": "yarn workspaces foreach -A --exclude crm-inkarma run typecheck",
     "test": "yarn workspaces foreach -A --exclude crm-inkarma run test",
     "build:portal": "yarn workspace @inkarma/portal build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lint": "oxlint --deny-warnings apps/hub apps/portal packages fixtures infra/scripts tests"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.65.1",
+    "oxlint": "0.16.12",
     "typescript": "7.0.2",
     "vite": "8.3.8",
     "vitest": "5.1.1"

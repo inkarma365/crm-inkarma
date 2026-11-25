@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { lettura, nessuno, scrittura } from 'src/roles/permissions';
 
 // Amministrazione: servizi venduti, prezzi e (dall'incremento 4) incassi. Non lavora i lead.
 export default defineRole({

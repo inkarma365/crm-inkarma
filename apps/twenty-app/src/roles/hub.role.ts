@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { lettura, scrittura, soloAggiunta } from 'src/roles/permissions';
 
 // Servizio Hub (solo API key): orchestrazione, import, portale clienti.
 // Scrive ma non cancella definitivamente; non tocca impostazioni, ruoli o modello dati.

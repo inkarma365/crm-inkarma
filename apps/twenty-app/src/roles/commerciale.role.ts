@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { lettura, nessuno, scrittura } from 'src/roles/permissions';
 
 // Commerciale dell'agenzia: lavora la pipeline di vendita dei servizi inKarma.
 // Non vede i lead generati per i committenti (sono dati dei clienti, non dell'agenzia).

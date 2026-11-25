@@ -51,7 +51,7 @@ I test dell'Hub usano PGlite in memoria (nessun Postgres richiesto) e un finto T
 
 ## Ambiente crmdev
 
-- Stack pubblicato solo su `127.0.0.1:33000-33099` della VPS `crmdev` (Docker rootless, raggiungibile via tunnel SSH). Twenty su 33000, Hub su 33010, Mailpit su 33025.
+- Stack pubblicato solo su `127.0.0.1:33000-33099` della VPS di sviluppo (alias SSH `crmdev`, Docker rootless, raggiungibile via tunnel SSH; dettagli del server in `docs/locale/`, non versionata). Twenty su 33000, Hub su 33010, Mailpit su 33025.
 - `infra/scripts/deploy.sh [servizi]` fa push del ramo corrente sul mirror bare della VPS, aggiorna il checkout e lancia `docker compose up -d --build`. Host override: `CRMDEV_HOST`.
 - Primo avvio: `bootstrap-workspace.mjs` (admin + API key) → installazione app Twenty → `provision-hub.mjs` (API key col ruolo "Servizio Hub", mai Admin, e webhook firmato) → opzionale `fixtures/seed-demo.mjs`. Gli script sono idempotenti e scrivono i segreti in `.secrets/` (non versionato).
 - Limiti di memoria dimensionati sulla quota di 2,5 GB della slice: il worker Twenty va in OOM sotto ~400 MB di heap (da qui `--max-old-space-size=700`). Non ridurli senza misurare.
@@ -61,5 +61,5 @@ I test dell'Hub usano PGlite in memoria (nessun Postgres richiesto) e un finto T
 
 ## Note
 
-- `docs/runbook/` è vuota e `tests/` alla radice è vuota. Il commento nel compose cita `docs/COMANDI.md`, che non esiste.
-- Per le migrazioni CloudPanel valgono le istruzioni in `le istruzioni CloudPanel locali (fuori repo)`.
+- Runbook e dettagli specifici del server (dominio, CloudPanel, firewall della sandbox) stanno in `docs/locale/`, esclusa da git perché il repository è pubblico.
+- Per le operazioni CloudPanel valgono le istruzioni locali fuori dal repository.

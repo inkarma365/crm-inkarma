@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  monorepo:
+    name: Hub, portale e pacchetti
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - name: Installazione (lockfile immutabile)
+        run: yarn install --immutable
+      - name: Lint (oxlint, nessun avviso ammesso)
+        run: yarn lint
+      - name: Typecheck
+        run: yarn typecheck
+      - name: Test (contratti, Hub con PGlite e Twenty finto, contrasti WCAG)
+        run: yarn test
+      - name: Build del portale
+        run: yarn build:portal
+
+  twenty-app:
+    name: App Twenty
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/twenty-app
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: yarn install --immutable
+      - name: Lint
+        run: yarn lint
+      - name: Typecheck
+        run: yarn typecheck
+      - name: Test unitari (identificatori, configurazione)
+        run: yarn test:unit
+
+  segreti:
+    name: Scansione segreti
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: gitleaks su tutta la storia
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.1 git /repo --redact --verbose --exit-code 1
+
+  compose:
+    name: Validazione docker compose
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: docker compose config
+        working-directory: infra/compose
+        run: |
+          cp .env.example .env
+          printf 'TWENTY_API_KEY=x\nTWENTY_WEBHOOK_SECRET=x\nSESSION_SECRET=x\n' > hub.env
+          docker compose config --quiet

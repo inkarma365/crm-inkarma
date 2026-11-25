@@ -19,7 +19,7 @@ export const api = async <T>(path: string, init: { method?: string; body?: unkno
         // Le richieste che modificano dati portano questo header: il server rifiuta le altre (CSRF).
         'x-portale': '1',
       },
-      body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
+      ...(init.body !== undefined ? { body: JSON.stringify(init.body) } : {}),
     });
   } catch {
     throw new ApiError(0, MSG_RETE);

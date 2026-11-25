@@ -16,3 +16,6 @@ playwright-report/
 test-results/
 *.log
 .secrets/
+
+# dettagli del server e runbook operativi: mai nel repository pubblico
+docs/locale/

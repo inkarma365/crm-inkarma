@@ -1,9 +1,9 @@
-import { CoreApiClient } from 'twenty-client-sdk/core';
+import { interroga } from 'src/front-components/lib/api';
 
 /** Il membro del workspace che sta usando la pagina (useUserId restituisce l'utente, non il membro). */
 export const membroCorrente = async (userId: string | null): Promise<{ id: string; nome: string } | null> => {
   if (!userId) return null;
-  const r = await new CoreApiClient().query({
+  const r = await interroga<{ workspaceMembers?: { edges: Array<{ node: { id: string; name?: { firstName?: string; lastName?: string } } }> } }>({
     workspaceMembers: {
       __args: { filter: { userId: { eq: userId } }, first: 1 },
       edges: { node: { id: true, name: { firstName: true, lastName: true } } },

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { defineFrontComponent } from 'twenty-sdk/define';
 import { AppPath, enqueueSnackbar, navigate, useUserId } from 'twenty-sdk/front-component';
-import { CoreApiClient } from 'twenty-client-sdk/core';
+import { interroga, modifica } from 'src/front-components/lib/api';
 import { Button } from 'twenty-ui/primitives/input';
 import { Tag } from 'twenty-ui/primitives/data-display';
 import { Skeleton } from 'twenty-ui/primitives/feedback';
@@ -45,13 +45,12 @@ const Oggi = () => {
 
   const carica = useCallback(async () => {
     try {
-      const c = new CoreApiClient();
       const ora = new Date();
       const setteGiorniFa = new Date(ora.getTime() - 7 * 86_400_000).toISOString();
       const lead = { id: true, titolo: true, evidenza: true, terminePresaInCarico: true, statoFunnel: true, ownerId: true, persona: { name: { firstName: true, lastName: true } }, commessa: { nome: true } };
       // Una query per fonte, in parallelo (genql non supporta alias sullo stesso campo).
       const elenco = async (plurale: string, filter: Record<string, unknown>, node: Record<string, unknown>, extra: Record<string, unknown> = {}) =>
-        ((await c.query({ [plurale]: { __args: { filter, first: 50, ...extra }, edges: { node } } } as never)) as Record<string, { edges: Array<{ node: any }> }>)[plurale]?.edges ?? [];
+        (await interroga<Record<string, { edges: Array<{ node: any }> }>>({ [plurale]: { __args: { filter, first: 50, ...extra }, edges: { node } } }))[plurale]?.edges ?? [];
       const consegna = { id: true, titolo: true, notifica: true, consegnataIl: true, commessa: { nome: true }, persona: { name: { firstName: true, lastName: true } } };
       const [senzaOwner, scaduti, pronti, daVerificare, esitiFermi, notificheKo, prossime] = await Promise.all([
         elenco('appartenenze', { ownerId: { is: 'NULL' }, statoFunnel: { in: [...STATI_CALDI] } }, lead),
@@ -67,7 +66,7 @@ const Oggi = () => {
       const assegnaAMe = (id: string) => async () => {
         const io = await membroCorrente(userId);
         if (!io) throw new Error('membro non trovato');
-        await c.mutation({ updateAppartenenza: { __args: { id, data: { ownerId: io.id } }, id: true } });
+        await modifica({ updateAppartenenza: { __args: { id, data: { ownerId: io.id } }, id: true } });
         return 'Assegnato a te';
       };
 

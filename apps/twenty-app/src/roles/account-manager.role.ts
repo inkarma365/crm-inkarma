@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { lettura, scrittura, soloAggiunta } from 'src/roles/permissions';
 
 // Account manager: gestisce le commesse assegnate, qualifica e consegna i lead.
 // Vede le condizioni economiche (servono per proposte coerenti), non cancella mai.

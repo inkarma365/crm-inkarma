@@ -13,7 +13,7 @@ const api = async (method, path, body) => {
   const r = await fetch(`${BASE}/rest/${path}`, {
     method,
     headers: { authorization: `Bearer ${boot.apiKey}`, 'content-type': 'application/json' },
-    body: body && JSON.stringify(body),
+    ...(body ? { body: JSON.stringify(body) } : {}),
   });
   const j = await r.json();
   if (!r.ok) throw new Error(`${method} ${path} → ${r.status} ${JSON.stringify(j).slice(0, 300)}`);
@@ -41,7 +41,7 @@ const servizio = async (data) => {
 };
 const sLead = await servizio( { nome: 'Lead generation B2B', categoria: 'LEAD_GENERATION', prezzoListino: eur(1200), ricorrenza: 'MENSILE' });
 const sSeo = await servizio({ nome: 'SEO locale', categoria: 'SEO', prezzoListino: eur(450), ricorrenza: 'MENSILE' });
-const sWeb = await servizio({ nome: 'Sito vetrina', categoria: 'WEB', prezzoListino: eur(3500), ricorrenza: 'UNA_TANTUM' });
+await servizio({ nome: 'Sito vetrina', categoria: 'WEB', prezzoListino: eur(3500), ricorrenza: 'UNA_TANTUM' });
 await servizio({ nome: 'Automazioni n8n', categoria: 'AUTOMAZIONE', prezzoListino: eur(900), ricorrenza: 'UNA_TANTUM' });
 
 // ---------- Clienti dell'agenzia ----------

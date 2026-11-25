@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { defineFrontComponent } from 'twenty-sdk/define';
 import { enqueueSnackbar, openCommandConfirmationModal, useSelectedRecordIds, useUserId } from 'twenty-sdk/front-component';
-import { CoreApiClient } from 'twenty-client-sdk/core';
+import { interroga, modifica } from 'src/front-components/lib/api';
 import { Button, Input } from 'twenty-ui/primitives/input';
 import { Tag } from 'twenty-ui/primitives/data-display';
 import { Skeleton } from 'twenty-ui/primitives/feedback';
@@ -60,7 +60,7 @@ const SchedaConsegna = () => {
   const carica = useCallback(async () => {
     if (!recordId) return;
     try {
-      const r = await new CoreApiClient().query({
+      const r = await interroga<{ appartenenza: Lead | null }>({
         appartenenza: {
           __args: { filter: { id: { eq: recordId } } },
           id: true,
@@ -126,7 +126,7 @@ const SchedaConsegna = () => {
     setInvio(true);
     try {
       const io = await membroCorrente(userId);
-      await new CoreApiClient().mutation({
+      await modifica({
         createConsegnaLead: {
           __args: {
             data: {
@@ -143,7 +143,7 @@ const SchedaConsegna = () => {
           id: true,
         },
       });
-      await new CoreApiClient().mutation({
+      await modifica({
         updateAppartenenza: { __args: { id: lead.id, data: { prontoPerConsegna: false } }, id: true },
       });
       await enqueueSnackbar({ message: `${nome} consegnato: notifica al cliente in invio`, variant: 'success' });

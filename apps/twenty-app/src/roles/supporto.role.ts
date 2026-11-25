@@ -1,6 +1,6 @@
 import { defineRole } from 'twenty-sdk/define';
 import { ID } from 'src/constants/ids';
-import { CAMPI_ECONOMICI, lettura, nessuno, scrittura, soloAggiunta } from 'src/roles/permissions';
+import { CAMPI_ECONOMICI, lettura, soloAggiunta } from 'src/roles/permissions';
 
 // Supporto: gestisce l'assistenza. Vede il contesto della commessa ma non i dati economici.
 export default defineRole({
