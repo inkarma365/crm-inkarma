@@ -46,7 +46,8 @@ const reconcile = async () => {
     const n = await reconcileCommesse(deps);
     app.log.info({ commesse: n }, 'riallineamento accessi portale');
   } catch (err) {
-    app.log.warn({ err }, 'riallineamento commesse non riuscito (Twenty non raggiungibile?)');
+    app.log.warn({ err }, 'riallineamento commesse non riuscito (Twenty non raggiungibile?): nuovo tentativo tra 30 s');
+    setTimeout(() => void reconcile(), 30_000).unref();
   }
 };
 const reconcileTimer = setInterval(() => void reconcile(), 10 * 60_000);

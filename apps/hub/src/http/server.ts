@@ -61,7 +61,7 @@ export const buildServer = async (deps: Deps) => {
   await app.register(cookie);
   await app.register(rateLimit, { global: false });
 
-  app.get('/healthz', async () => ({ ok: true }));
+  app.get('/healthz', { logLevel: 'warn' }, async () => ({ ok: true }));
 
   // ---------- Webhook Twenty: verifica firma, registra in modo durevole, risponde subito ----------
   app.post('/webhooks/twenty', async (req, reply) => {
