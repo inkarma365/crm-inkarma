@@ -3,7 +3,7 @@
 FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS deps
 WORKDIR /app
 RUN corepack enable
-COPY package.json yarn.lock .yarnrc.yml ./
+COPY package.json yarn.lock .yarnrc.yml tsconfig.base.json ./
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/ui-tokens/package.json packages/ui-tokens/
 COPY apps/hub/package.json apps/hub/
@@ -13,7 +13,7 @@ RUN yarn workspaces focus @inkarma/hub --production
 FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS portal
 WORKDIR /app
 RUN corepack enable
-COPY package.json yarn.lock .yarnrc.yml ./
+COPY package.json yarn.lock .yarnrc.yml tsconfig.base.json ./
 COPY packages/contracts/package.json packages/contracts/
 COPY packages/ui-tokens/package.json packages/ui-tokens/
 COPY apps/hub/package.json apps/hub/
