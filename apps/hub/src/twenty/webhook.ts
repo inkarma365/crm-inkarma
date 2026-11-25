@@ -36,5 +36,9 @@ export const parseTwentyWebhook = (body: unknown) => {
   >;
   const recordId = String(record.id ?? b.recordId ?? '');
   const eventDate = String(b.eventDate ?? b.timestamp ?? new Date().toISOString());
-  return { eventName, objectName: objectName ?? '', action: action ?? '', record, recordId, eventDate };
+  /** Identificatore stabile dell'evento assegnato da Twenty: base della deduplica delle riconsegne. */
+  const eventId = typeof b.eventId === 'string' && b.eventId ? b.eventId : null;
+  /** Solo nomi delle chiavi (nessun valore): diagnostica per payload di forma inattesa. */
+  const keys = Object.keys(b).sort();
+  return { eventName, objectName: objectName ?? '', action: action ?? '', record, recordId, eventDate, eventId, keys };
 };

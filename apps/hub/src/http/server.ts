@@ -79,14 +79,21 @@ export const buildServer = async (deps: Deps) => {
     const commessaId =
       w.objectName === 'commessa' ? w.recordId : typeof w.record.commessaId === 'string' ? (w.record.commessaId as string) : null;
     const { inserted } = await recordEvent(db, {
-      dedupKey: `twenty:${w.eventName}:${w.recordId}:${sha256(req.rawBody ?? '')}`,
+      // Riconsegne dello stesso evento: stesso eventId Twenty (o, in mancanza, stesso corpo).
+      dedupKey: w.eventId ? `twenty:${w.eventId}` : `twenty:${w.eventName}:${w.recordId}:${sha256(req.rawBody ?? '')}`,
       eventId: `${w.eventName}:${w.recordId}`,
       type: 'twenty.webhook',
       version: 1,
       source: 'twenty',
       commessaId,
       occurredAt: w.eventDate,
-      payload: { eventName: w.eventName, objectName: w.objectName, action: w.action, recordId: w.recordId },
+      payload: {
+        eventName: w.eventName,
+        objectName: w.objectName,
+        action: w.action,
+        recordId: w.recordId,
+        ...(w.eventName ? {} : { chiaviCorpo: w.keys }),
+      },
     });
     if (inserted) deps.wake?.();
     return reply.code(200).send({ ricevuto: true, duplicato: !inserted });
