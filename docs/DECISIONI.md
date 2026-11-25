@@ -17,8 +17,9 @@ Formato: decisione → alternativa scartata → costo o limite che ha deciso. Da
    diventa "incerto" e richiede riconciliazione, non un nuovo invio.
 7. **Code eventi con lease** (`UPDATE … FOR UPDATE SKIP LOCKED … RETURNING`) invece di transazioni lunghe:
    nessun lock tenuto durante chiamate di rete (difetto emerso nei test con PGlite).
-8. **Hub in TypeScript eseguito da Node 24 senza build**; portale compilato in locale e copiato sulla VPS:
-   il build sulla VPS ha saturato la sandbox (2,2 GB `MemoryHigh`, swap 0) fino al blocco dello stack.
+8. **Hub in TypeScript eseguito da Node 24 in sviluppo, impacchettato con esbuild per il deploy**; portale e bundle
+   dell'Hub costruiti in locale (o in CI) e copiati sulla VPS. Due volte un `yarn install`/build dentro l'immagine
+   ha saturato la sandbox (2,2 GB `MemoryHigh`, swap 0) fino al blocco di Twenty: l'immagine ora copia solo artefatti.
 9. **Limiti della sandbox non alzati**: la produzione sullo stesso server ha poca memoria libera e picchi vicini al totale.
    Memoria misurata: Twenty server ~750 MB, worker ~250-500 MB (sotto 400 MB di heap va in OOM all'avvio), Postgres ~65 MB, Hub ~55 MB.
 10. **Dominio unico `crm.inkarma.it`** con instradamento per percorso (vedi runbook): un certificato, cookie del

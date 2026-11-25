@@ -32,8 +32,11 @@ jobs:
         run: yarn typecheck
       - name: Test (contratti, Hub con PGlite e Twenty finto, contrasti WCAG)
         run: yarn test
-      - name: Build del portale
-        run: yarn build:portal
+      - name: Build del portale e bundle dell'Hub
+        run: |
+          yarn build:portal
+          yarn build:hub
+          test -s apps/hub/dist/main.mjs
 
   twenty-app:
     name: App Twenty

@@ -1,0 +1,4 @@
+# Token JWT di sviluppo pubblico incluso dallo scaffold ufficiale `twenty app init` (istanza `twenty local`
+# su localhost:2020, workspace fittizio 20202020-…). Non è una credenziale di questo progetto ed è stato
+# rimosso dal codice; resta solo nella storia del commit di scaffold.
+105274339f99052f3ee7321af18eba9599616a1d:apps/twenty-app/vitest.config.ts:jwt:7
