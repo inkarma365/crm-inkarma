@@ -71,6 +71,7 @@ const { createWebhook } = await gql(
         'appartenenza.created',
         'appartenenza.updated',
         'opposizione.created',
+        'commessa.created',
         'commessa.updated',
       ],
       roleId: hubRole.id,

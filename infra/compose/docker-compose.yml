@@ -57,7 +57,9 @@ services:
   worker:
     image: twentycrm/twenty:v2.63.0@sha256:a3f361c289dcfd6e1fbca0201c49441199e0522fd0c8debe665af95c6a0b5269
     command: ["yarn", "worker:prod"]
-    mem_limit: 500m
+    # Il worker carica tutti i moduli all'avvio: sotto ~400 MB di heap va in OOM e riparte in loop
+    # (misurato su v2.63.0: picco 366 MB già al boot). Vedi docs/COMANDI.md.
+    mem_limit: 850m
     volumes:
       - server-local-data:/app/packages/twenty-server/.local-storage
     env_file: *twenty-extra
@@ -65,7 +67,7 @@ services:
       <<: *twenty-env
       DISABLE_DB_MIGRATIONS: "true"
       DISABLE_CRON_JOBS_REGISTRATION: "true"
-      NODE_OPTIONS: --max-old-space-size=380
+      NODE_OPTIONS: --max-old-space-size=700
     depends_on:
       db: { condition: service_healthy }
       server: { condition: service_healthy }
@@ -73,7 +75,7 @@ services:
 
   db:
     image: postgres:16@sha256:07abc3f43c9395b0bdbbab36bc25ddb0e8d83cd4fcafb5fb7d6abe14ff156dd8
-    mem_limit: 450m
+    mem_limit: 350m
     command:
       - postgres
       - -c

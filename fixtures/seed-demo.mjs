@@ -34,16 +34,20 @@ if (esistenti.length) {
   process.exit(0);
 }
 
-// ---------- Catalogo servizi ----------
-const sLead = await crea('servizi', { nome: 'Lead generation B2B', categoria: 'LEAD_GENERATION', prezzoListino: eur(1200), ricorrenza: 'MENSILE' });
-const sSeo = await crea('servizi', { nome: 'SEO locale', categoria: 'SEO', prezzoListino: eur(450), ricorrenza: 'MENSILE' });
-const sWeb = await crea('servizi', { nome: 'Sito vetrina', categoria: 'WEB', prezzoListino: eur(3500), ricorrenza: 'UNA_TANTUM' });
-await crea('servizi', { nome: 'Automazioni n8n', categoria: 'AUTOMAZIONE', prezzoListino: eur(900), ricorrenza: 'UNA_TANTUM' });
+// ---------- Catalogo servizi (idempotente per nome) ----------
+const servizio = async (data) => {
+  const found = await api('GET', `servizi?filter=${encodeURIComponent(`nome[eq]:${JSON.stringify(data.nome)}`)}`);
+  return found[0] ?? crea('servizi', data);
+};
+const sLead = await servizio( { nome: 'Lead generation B2B', categoria: 'LEAD_GENERATION', prezzoListino: eur(1200), ricorrenza: 'MENSILE' });
+const sSeo = await servizio({ nome: 'SEO locale', categoria: 'SEO', prezzoListino: eur(450), ricorrenza: 'MENSILE' });
+const sWeb = await servizio({ nome: 'Sito vetrina', categoria: 'WEB', prezzoListino: eur(3500), ricorrenza: 'UNA_TANTUM' });
+await servizio({ nome: 'Automazioni n8n', categoria: 'AUTOMAZIONE', prezzoListino: eur(900), ricorrenza: 'UNA_TANTUM' });
 
 // ---------- Clienti dell'agenzia ----------
-const rossi = await crea('companies', { name: 'Rossi Serramenti Srl', domainName: { primaryLinkUrl: 'https://rossi-serramenti.test' }, employees: 35 });
-const alfa = await crea('companies', { name: 'Alfa Impianti Spa', domainName: { primaryLinkUrl: 'https://alfa-impianti.test' }, employees: 120 });
-const ferri = await crea('companies', { name: 'Ferri Arredi Snc', domainName: { primaryLinkUrl: 'https://ferri-arredi.test' }, employees: 12 });
+const rossi = await crea('companies', { name: 'Rossi Serramenti Srl', domainName: { primaryLinkUrl: 'https://rossi-serramenti.test' } });
+const alfa = await crea('companies', { name: 'Alfa Impianti Spa', domainName: { primaryLinkUrl: 'https://alfa-impianti.test' } });
+const ferri = await crea('companies', { name: 'Ferri Arredi Snc', domainName: { primaryLinkUrl: 'https://ferri-arredi.test' } });
 
 const A = await crea('commesse', {
   nome: 'Rossi Serramenti — Lead showroom 2026',
