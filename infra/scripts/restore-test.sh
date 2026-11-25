@@ -15,11 +15,13 @@ SCHEMA=$(psql -d default -c "select schema_name from information_schema.schemata
 fail=0
 confronta() { # db_orig db_rest query
   a=$(psql -d "$1" -c "$3"); b=$(psql -d "$2" -c "$3")
-  printf '%-60s attuale=%-6s ripristinato=%-6s %s\n' "$3" "$a" "$b" "$([ "$a" = "$b" ] && echo ok || echo DIVERSO)"
-  [ "$a" = "$b" ] || fail=1
+  esito=$([ -n "$a" ] && [ "$a" = "$b" ] && echo ok || echo DIVERSO)
+  printf '%-60s attuale=%-6s ripristinato=%-6s %s\n' "$3" "${a:-?}" "${b:-?}" "$esito"
+  [ "$esito" = ok ] || fail=1
 }
-for t in commessa campagna appartenenza "consegnaLead" "feedbackLead" opposizione person company; do
-  confronta default restore_check_twenty "select count(*) from \"$SCHEMA\".\"_$t\"" 2>/dev/null || confronta default restore_check_twenty "select count(*) from \"$SCHEMA\".\"$t\""
+# Oggetti dell'app: tabelle con prefisso "_"; oggetti standard di Twenty: senza prefisso.
+for t in _commessa _campagna _appartenenza _consegnaLead _feedbackLead _opposizione person company; do
+  confronta default restore_check_twenty "select count(*) from \"$SCHEMA\".\"$t\""
 done
 for t in event_log effect_outbox portal_user portal_membership audit_log import_batch; do confronta hub restore_check_hub "select count(*) from $t"; done
 for db in restore_check_twenty restore_check_hub; do psql -d postgres -c "DROP DATABASE $db" >/dev/null; done
