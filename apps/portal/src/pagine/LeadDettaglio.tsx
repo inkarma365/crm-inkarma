@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { api, ApiError } from '../lib/api.ts';
 import { useEsito } from '../lib/esito.tsx';
 import { AVANZAMENTI, ETICHETTA, TONO, conOra, chiDaEmail, lunga } from '../lib/formato.ts';
@@ -12,6 +12,7 @@ export function LeadDettaglio({ id, versione, onEsito }: { id: string; versione:
   const [lead, setLead] = useState<Dettaglio | null>(null);
   const [errore, setErrore] = useState<{ status: number; msg: string } | null>(null);
   const { invia, inCorso, errore: erroreInvio } = useEsito();
+  const { search } = useLocation();
 
   useEffect(() => {
     let vivo = true;
@@ -27,7 +28,7 @@ export function LeadDettaglio({ id, versione, onEsito }: { id: string; versione:
   if (errore)
     return (
       <div className="scheda">
-        <Link to="/lead" className="indietro">
+        <Link to={`/lead${search}`} className="indietro">
           Torna ai lead
         </Link>
         <p className="vuoto">
@@ -42,7 +43,7 @@ export function LeadDettaglio({ id, versione, onEsito }: { id: string; versione:
 
   return (
     <article className="scheda" aria-labelledby="scheda-nome">
-      <Link to="/lead" className="indietro">
+      <Link to={`/lead${search}`} className="indietro">
         Torna ai lead
       </Link>
       <h2 id="scheda-nome" className="scheda__nome">

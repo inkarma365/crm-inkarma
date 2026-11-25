@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { breve } from '../lib/formato.ts';
 import type { Lead } from '../lib/tipi.ts';
 import { Timbro } from './Timbro.tsx';
@@ -20,12 +20,14 @@ export function Bolla({
   onEsito: (lead: Lead) => void;
 }) {
   const inAttesa = lead.esito === 'IN_ATTESA';
+  // La vista corrente (?vista=tutti) segue il dettaglio: l'elenco a fianco non cambia sotto gli occhi.
+  const { search } = useLocation();
   return (
     <article className={`bolla${inAttesa ? ' bolla--attesa' : ''}${selezionata ? ' bolla--selezionata' : ''}`} aria-labelledby={`b-${lead.id}`}>
       <div className="bolla__corpo">
         <header className="bolla__testa">
           <h2 id={`b-${lead.id}`} className="bolla__nome">
-            <Link to={`/lead/${lead.id}`} className="bolla__link">
+            <Link to={`/lead/${lead.id}${search}`} className="bolla__link">
               {lead.nome}
             </Link>
           </h2>

@@ -69,7 +69,7 @@ function LeadElenco({ versione }: { versione: number }) {
           <button
             type="button"
             aria-pressed={vista === 'da_valutare'}
-            onClick={() => setParams(vista === 'da_valutare' ? params : {}, { replace: true })}
+            onClick={() => setParams({}, { replace: true })}
           >
             Da valutare <span className="conteggio">{daValutare.length}</span>
           </button>
